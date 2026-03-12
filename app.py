@@ -49,4 +49,3 @@ with col_b:
 
 if final_preis >= 10.0:
     st.balloons()
-st.success(f"### ENDPREIS: {end_result:.2f}€")
