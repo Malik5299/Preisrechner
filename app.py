@@ -1,36 +1,43 @@
-weight = float(input("Gewicht in gramm: "))
-print_time = float(input("Druckzeit in min: "))
-working_time = float(input("selbst designt: 3, bearbeitet: 2, nur gedruckt: 1 "))
+import streamlit as st
 
-multi_color_input = input("Mehrfarbig? (j/n) ")
-multi_color = 1.0 if multi_color_input == "j" else 0.0
+st.set_page_config(page_title="3D-Druck Kalkulator", page_icon="🖨️")
+st.title("🖨️ 3D-Druck Preisrechner")
 
-total_material_cost = 0
-has_bought = input("Materialien gekauft? (j/n) ")
+weight = st.number_input("Gewicht in Gramm", min_value=0.0, step=1.0)
+print_time = st.number_input("Druckzeit in Minuten", min_value=0.0, step=1.0)
+working_time = st.radio("Arbeitsaufwand", options=[1.0, 2.0, 3.0], format_func=lambda x: {3.0: "Selbst designt (3€)", 2.0: "Bearbeitet (2€)", 1.0: "Nur gedruckt (1€)"}[x])
 
-if has_bought == "j":
-    while True:
-        material_price = float(input("Materialpreis pro Stück: "))
-        material_number = float(input("Anzahl der Materialien: "))
-        total_material_cost += material_price * material_number
-        more = input("Möchten Sie weitere Materialien hinzufügen? (j/n) ")
-        if more == "n":
-            break
+multi_color_input = st.checkbox("Mehrfarbig? (+1€)")
+multi_color = 1.0 if multi_color_input else 0.0
 
-price = weight * (25.99/1000) + print_time * 0.01 + working_time + total_material_cost + multi_color
-print("Der aktuelle Preis beträgt: " + str(price) + "€")
+total_material_cost = 0.0
+has_bought = st.toggle("Zusätzliche Materialien gekauft?")
 
-addition = float(input("-2€ bis +2€ "))
+if has_bought:
+    rows = st.number_input("Anzahl verschiedener Material-Posten", min_value=1, step=1)
+    for i in range(int(rows)):
+        col1, col2 = st.columns(2)
+        with col1:
+            m_price = st.number_input(f"Preis pro Stück (Posten {i+1})", min_value=0.0, key=f"p_{i}")
+        with col2:
+            m_num = st.number_input(f"Anzahl (Posten {i+1})", min_value=0.0, key=f"n_{i}")
+        total_material_cost += m_price * m_num
 
-print("\n" + "="*30)
-print("          QUITTUNG          ")
-print("="*30)
-print(f"Filamentkosten:     {weight * (25.99/1000):>7.2f}€")
-print(f"Druckzeit-Kosten:   {print_time * 0.01:>7.2f}€")
-print(f"Arbeitszeit:        {working_time:>7.2f}€")
-print(f"Zusatzmaterialien:  {total_material_cost:>7.2f}€")
-print(f"Mehrfarbig-Aufschlag:{multi_color:>7.2f}€")
-print(f"Manuelle Anpassung: {addition:>7.2f}€")
-print("-" * 30)
-print(f"GESAMTPREIS:        {price + addition:>7.2f}€")
-print("="*30)
+price = weight * (25.99 / 1000) + print_time * 0.01 + working_time + total_material_cost + multi_color
+
+st.divider()
+addition = st.slider("Manuelle Anpassung (Offset -2€ bis +2€)", -2.0, 2.0, 0.0, step=0.1)
+final_price = price + addition
+
+st.subheader("🧾 QUITTUNG")
+c1, c2 = st.columns(2)
+with c1:
+    st.write(f"Filament: {weight * (25.99/1000):.2f}€")
+    st.write(f"Druckzeit: {print_time * 0.01:.2f}€")
+    st.write(f"Arbeit: {working_time:.2f}€")
+with c2:
+    st.write(f"Zusatzmaterial: {total_material_cost:.2f}€")
+    st.write(f"Mehrfarbig: {multi_color:.2f}€")
+    st.write(f"Anpassung: {addition:.2f}€")
+
+st.success(f"### GESAMTPREIS: {final_price:.2f}€")
