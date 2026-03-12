@@ -16,7 +16,7 @@ filament_kosten = weight * (25.99 / 1000)
 zeit_kosten = print_time * 0.01
 selbstkosten = filament_kosten + zeit_kosten + aufwand + multi_color
 
-preis_mit_gewinn = selbstkosten * 1.30
+preis_mit_gewinn = selbstkosten * 1.20
 mindestpreis = 3.00
 
 if preis_mit_gewinn < mindestpreis:
@@ -49,3 +49,4 @@ with col_b:
 
 if final_preis >= 10.0:
     st.balloons()
+
