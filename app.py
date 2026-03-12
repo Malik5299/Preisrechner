@@ -2,15 +2,15 @@ import streamlit as st
 import math
 
 st.set_page_config(page_title="Preisrechner", page_icon="💰")
-st.title("3D-Druck Preisrechner")
+st.title("Preisrechner")
 
 weight = st.number_input("Gewicht in Gramm", min_value=0.0, step=1.0)
 print_time = st.number_input("Druckzeit in Minuten", min_value=0.0, step=1.0)
 
-aufwand = st.radio("Aufwand", options=[0.5, 1.5], 
-                   format_func=lambda x: {1.5: "Design/Bearbeitung (1,50€)", 0.5: "Nur Druck (0,50€)"}[x])
+aufwand = st.radio("Aufwand", options=[1.0, 2.0, 3.0], 
+                   format_func=lambda x: {3.0: "Design (3,00€)", 2.0: "Bearbeitet (2,00€)", 1.0: "Nur Druck (1,00€)"}[x])
 
-multi_color = 0.5 if st.checkbox("Mehrfarbig? (+0,50€)") else 0.0
+multi_color = 1.0 if st.checkbox("Mehrfarbig? (+1,00€)") else 0.0
 
 filament_kosten = weight * (25.99 / 1000)
 zeit_kosten = print_time * 0.01
