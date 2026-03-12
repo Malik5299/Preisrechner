@@ -39,7 +39,7 @@ col_a, col_b = st.columns(2)
 with col_a:
     st.write("**Details zur Kalkulation:**")
     st.write(f"Netto-Selbstkosten: {selbstkosten:.2f} €")
-    st.write(f"Gewinnmarge (30%): {selbstkosten * 0.30:.2f} €")
+    st.write(f"Gewinnmarge (20%): {selbstkosten * 0.20:.2f} €")
     if preis_mit_gewinn < mindestpreis:
         st.caption(f"Info: Mindestpreis von {mindestpreis:.2f} € wurde angewendet.")
 
@@ -49,4 +49,5 @@ with col_b:
 
 if final_preis >= 10.0:
     st.balloons()
+
 
